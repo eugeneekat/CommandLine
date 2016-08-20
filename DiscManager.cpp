@@ -18,8 +18,8 @@ void DiscManager::FillMethodMap()throw()
 	this->twoArgsMethodMap["copy"] = &DiscManager::Copy;
 }
 
-/*Âñïîìîãàòåëüíûå ìåòîäû*/
-//Ôîðìàòèðóåò ïóòü äëÿ óäîáíîé è îäíîîáðàçíîé ðàáîòû ñ íèì
+/*Вспомогательные методы*/
+//Форматирует путь для удобной и однообразной работы с ним
 std::ostringstream DiscManager::PrepareDir(const string & dir)const throw()
 {
 	std::ostringstream os;
@@ -29,7 +29,7 @@ std::ostringstream DiscManager::PrepareDir(const string & dir)const throw()
 		os << dir;
 	return os;
 }
-//Ïðîâåðÿåò ñóùåñòâóåò ëè äèðåêòîðèÿ ïî äàííîìó ïóòè
+//Проверяет существует ли директория по данному пути
 bool DiscManager::IsDirExist(const string & dir)const throw()
 {
 	std::ostringstream os(this->PrepareDir(dir));
@@ -44,7 +44,7 @@ bool DiscManager::IsDirExist(const string & dir)const throw()
 	_findclose(handle);
 	return true;
 }
-//Ïðîâåðÿåò ñóùåñòâóåò ëè ôàéë ïî äàííîìó ïóòè
+//Проверяет существует ли файл по данному пути
 bool DiscManager::IsFileExist(const string & file)const throw()
 {
 	std::ifstream os(file, std::ios::binary);
@@ -54,15 +54,15 @@ bool DiscManager::IsFileExist(const string & file)const throw()
 	os.close();
 	return ret;
 }
-//Êîïèðóåò ôàéë
+//Копирует файл
 void DiscManager::CopyFile(const string & source, const string & dest)const
 {
 	std::ostringstream path;
 	path << dest << "\\" << source.substr(source.rfind("\\") + 1);
-	//Ïðè ïîïûòêå ñêîïèðîâàòü ôàéë ñàì â ñåáÿ
+	//При попытке скопировать файл сам в себя
 	if (source == path.str())
 		return;
-	//Åñëè â ïàïêå åñòü ôàéë ñ òàêèì íàçâàíèåì
+	//Если в папке есть файл с таким названием
 	_finddata_t fd = { 0 };
 	std::unique_ptr<WrapHandle>handle(new WrapHandle());
 	*handle = _findfirst(path.str().c_str(), &fd);
@@ -101,7 +101,7 @@ void DiscManager::CopyFile(const string & source, const string & dest)const
 	inFile.close();
 	outFile.close();
 }
-//Êîïèðóåò äèðåêòîðèþ
+//Копирует директорию
 void DiscManager::CopyDir(const string & source, const string & dest)const
 {
 	static std::ostringstream exceptionLog;
@@ -160,7 +160,7 @@ void DiscManager::CopyDir(const string & source, const string & dest)const
 		throw ex;
 	}	
 }
-//Óäàëÿåò äèðåêòîðèþ ïî çàäàííîìó ïóòè
+//Удаляет директорию по заданному пути
 void DiscManager::DeleteDir(const string & dir)const
 {
 	int error = _rmdir(dir.c_str());
@@ -171,7 +171,7 @@ void DiscManager::DeleteDir(const string & dir)const
 		throw MyException(os.str(), "Error deleting dir!");
 	}
 }
-//Óäàëÿåò äèðåêòîðèþ ðåêóðñèâíî
+//Удаляет директорию рекурсивно
 void DiscManager::DeleteDirRec(const string & dir)const
 {
 	static std::ostringstream exceptionLog;
@@ -226,8 +226,8 @@ void DiscManager::DeleteDirRec(const string & dir)const
 	}
 }
 
-/*Îñíîâíûå ìåòîäû*/
-//Ñïðàâêà
+/*Основные методы*/
+//Справка
 void DiscManager::Help()const throw()
 {
 	std::ostringstream os;
@@ -241,7 +241,7 @@ void DiscManager::Help()const throw()
 		<< "copy\t\tCopy directory or file\t\tcopy C:\\MyFile.txt D:\\MyFolder\\MyFile.txt\n\t\t\t\t\t\tcopy C:\\MyDir D:\\MySecondDir - (Warning there must be MySecondDir)";
 	std::cout << os.str() << std::endl;
 }
-//Îòîáðàæàåò ñîäåðæèâîå òåêóùåãî êàòàëîãà
+//Отображает содерживое текущего каталога
 void DiscManager::ShowDir()const throw()
 {
 	std::ostringstream os;
@@ -262,7 +262,7 @@ void DiscManager::ShowDir()const throw()
 		std::cout << this->currentDirectory << "\\" << fd.name << std::endl;
 	} while (!_findnext(*handle, &fd));
 }
-//Ìåíÿåò òåêóùåå ïîëîæåíèå â êàòàëîãå
+//Меняет текущее положение в каталоге
 void DiscManager::ChangeDir(const string & dir)const
 {
 	std::ostringstream os(this->PrepareDir(dir).str());
@@ -276,7 +276,7 @@ void DiscManager::ChangeDir(const string & dir)const
 	}
 
 }
-//×òåíèå ôàéëà è âûâîä íà êîíñîëü
+//Чтение файла и вывод на консоль
 void DiscManager::ReadFile(const string & path)const
 {
 	std::ifstream file(path);
@@ -300,10 +300,10 @@ void DiscManager::ReadFile(const string & path)const
 	std::cout << std::endl;
 	file.close();
 }
-//Ñîçäàåò ôàéë
+//Создает файл
 void DiscManager::CreateFile(const string & path)const
 {
-	//Åñëè òàêîé ôàéë óæå åñòü òî áðîñàåò èñêëþ÷åíèå
+	//Если такой файл уже есть то бросает исключение
 	if (this->IsFileExist(path))
 	{
 		std::ostringstream os;
@@ -311,6 +311,7 @@ void DiscManager::CreateFile(const string & path)const
 		throw MyException(os.str(), "Error create file: file already exist.");
 	}
 	std::ofstream file(path);
+	//Если файл по какой либо причине не открылся
 	if (!file.is_open())
 	{
 		std::ostringstream os;
@@ -319,23 +320,23 @@ void DiscManager::CreateFile(const string & path)const
 	}
 	file.close();
 }
-//Êîïèðóåò ôàéë/äèðåêòîðèþ
+//Копирует файл/директорию
 void DiscManager::Copy(const string & pathSource, const string & pathDest)const
 {
-	//Ôîðìàòèðóåò ïóòü íàçíà÷åíèÿ
+	//Форматирует путь назначения
 	std::ostringstream osDest(this->PrepareDir(pathDest));
-	//Åñëè ñëåâà è ñïðàâà ñóùåñòâóþùèå äèðåêòîðèè
+	//Если слева и справа существующие директории
 	if (this->IsDirExist(pathSource) && this->IsDirExist(pathDest))
 	{
-		//Ôîðìàòèðóåò ïóòü èñòî÷íèêà
+		//Форматирует путь источника
 		std::ostringstream osSource(this->PrepareDir(pathSource));
-		//Êîïèðóåò ñîäåðæèìîå äèðåêòîðèè ñëåâà â äèðåêòîðèþ ñïðàâà
+		//Копирует содержимое директории слева в директорию справа
 		this->CopyDir(osSource.str(), osDest.str());
 	}
-	//Åñëè ñëåâà ôàéë, à ñïðàâà äèðåêòîðèÿ òî êîïèðóåò ôàéë ñëåâà â äèðåêòîðèþ ñðàâà
+	//Если слева файл, а справа директория то копирует файл слева в директорию срава
 	else if (this->IsFileExist(pathSource) && this->IsDirExist(pathDest))
 		this->CopyFile(pathSource, osDest.str());
-	//Èíà÷å íåêîððåêòíûå ïóòè
+	//Иначе не правильный контекст копирования
 	else
 	{
 		std::ostringstream os;
@@ -343,7 +344,7 @@ void DiscManager::Copy(const string & pathSource, const string & pathDest)const
 		throw MyException(os.str(), "Copy error: incorrect copy context");
 	}
 }
-//Óäàëÿåò ôàéë/äèðåêòîðèþ
+//Удаляет файл/директорию
 void DiscManager::Delete(const string & path)const
 {
 	if (this->IsDirExist(path))
@@ -358,11 +359,11 @@ void DiscManager::Delete(const string & path)const
 	}
 }
 
-//Ìåòîä âûïîëíåíèÿ êîìàíäû
+//Метод выполнения команды
 void DiscManager::Execute(const vector<string> & args)
 {
-	/*Îïðåäåëÿåò êîëè÷åñòâî àðãóìåíòîâ, ñâåðÿåòñÿ ñ êàðòîé,
-	è åñëè åñòü òàêîé ìåòîä - âûïîëíÿåò åãî, åñëè íåòó âûáðàñûâàåò èñêëþ÷åíèå*/
+	/*Определяет количество аргументов, сверяется с картой,
+	и если есть такой метод - выполняет его, если нету выбрасывает исключение*/
 	switch (args.size())
 	{
 	case NoArguments:
