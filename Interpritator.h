@@ -7,44 +7,43 @@
 class Interpritator
 {
 private:
-	//Закрытый конструктор - Singleton
+	Singleton
 	Interpritator()
 	{
-		//Инициализация алгоритма нарезания
+		//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїР°СЂСЃРµСЂР°
 		this->uptrParser.reset(new MyParser);
-		//Инициализация класса - исполнителя
+		//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РёСЃРїРѕР»РЅРёС‚РµР»СЏ
 		this->uptrExcecuter.reset(new DiscManager);
-
+		//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р»РѕРіРіРµСЂР°
 		this->uptrLogger.reset(new MyLogger);
 	}
-	//Запрещены операторы копирования и присваивания
 	Interpritator(Interpritator const&)throw();
 	Interpritator& operator= (Interpritator const&)const throw();
-	//Модули интерпритатора
+	//РњРѕРґСѓР»Рё
 	std::unique_ptr<IParser>uptrParser;
 	std::unique_ptr<IExecutable>uptrExcecuter;
 	std::unique_ptr<ILogger>uptrLogger;
 	
 public:
 	~Interpritator()throw()	{}
-	//Статический метод - возвращает ссылку на статический класс
+	//РџРѕР»СѓС‡РµРЅРёРµ СЃСЃС‹Р»РєРё РЅР° РєР»Р°СЃСЃ Interpritator
 	static Interpritator & GetInstance()
 	{
 		static Interpritator interpritator;
 		return interpritator;
 	}
-	/*Метод выполнения команды в соответствии с выбранным
-	алгоритмом парсера и класса исполнителя*/
+	/*РњРµС‚РѕРґ РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґС‹ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ РІС‹Р±СЂР°РЅРЅРѕР№
+	СЃС‚СЂР°С‚РµРіРёРµР№ РїР°СЂСЃРёРЅРіР° Рё РєР»Р°СЃСЃР° РёСЃРїРѕР»РЅРёС‚РµР»СЏ*/
 	void Execute(const string & strCmd)
 	{
 		try
 		{
-			//Парсинг
-			//vector<string>args = this->parse->Algorithm(strCmd);
+			//РџР°СЂСЃРёРЅРі
 			vector<string>args = uptrParser->Algorithm(strCmd);
-			//Исполнение
+			//Р’С‹РїРѕР»РЅРµРЅРёРµ
 			this->uptrExcecuter->Execute(args);
 		}
+		//РџРµСЂРµС…РІР°С‚ РѕС€РёР±РѕРє Рё Р»РѕРіРіРёСЂРѕРІР°РЅРёРµ
 		catch (const MyException & ex)
 		{
 			std::cout << ex << std::endl;
