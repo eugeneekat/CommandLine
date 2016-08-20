@@ -1,6 +1,6 @@
 #pragma once
 #include "ILogger.h"
-//Реализация моего логгера
+//Р РµР°Р»РёР·Р°С†РёСЏ РјРѕРµРіРѕ Р»РѕРіРіРµСЂР°
 class MyLogger : public ILogger
 {
 private:
