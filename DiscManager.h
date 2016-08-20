@@ -71,7 +71,7 @@ protected:
 	}
 	
 	//Отображает содерживое текущего каталога
-	void ShowDir()const throw();
+	void ShowDir()const;
 	
 	//Меняет текущее положение в каталоге
 	void ChangeDir(const string & dir)const;
