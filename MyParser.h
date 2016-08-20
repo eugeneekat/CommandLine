@@ -1,7 +1,7 @@
 #pragma once
 #include "IParser.h"
 
-//Реализация моего варианта парсера
+//Р РµР°Р»РёР·Р°С†РёСЏ РјРѕРµРіРѕ РїР°СЂСЃРµСЂР°
 class MyParser : public IParser
 {
 private:
