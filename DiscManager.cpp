@@ -1,25 +1,25 @@
 #include "stdafx.h"
 #include "DiscManager.h"
 
-//Заполнение карт методов (вызывается в конструкторе)
+//Р—Р°РїРѕР»РЅРµРЅРёРµ РєР°СЂС‚ РјРµС‚РѕРґРѕРІ (РІС‹Р·С‹РІР°РµС‚СЃСЏ РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ)
 void DiscManager::FillMethodMap()throw()
 {
-	//Заполнение карты методов без аргументов
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ РєР°СЂС‚С‹ РјРµС‚РѕРґРѕРІ Р±РµР· Р°СЂРіСѓРјРµРЅС‚РѕРІ
 	this->voidMethodMap["scd"] = &DiscManager::ShowCurrentDir;
 	this->voidMethodMap["dir"] = &DiscManager::ShowDir;
 	this->voidMethodMap["help"] = &DiscManager::Help;
-	//Заполнение карты методов с 1 аргументом
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ РєР°СЂС‚С‹ РјРµС‚РѕРґРѕРІ СЃ 1 Р°СЂРіСѓРјРµРЅС‚РѕРј
 	this->oneArgsMethodMap["cd"] = &DiscManager::ChangeDir;
 	this->oneArgsMethodMap["read"] = &DiscManager::ReadFile;
 	this->oneArgsMethodMap["crdir"] = &DiscManager::CreateDir;
 	this->oneArgsMethodMap["crfil"] = &DiscManager::CreateFile;
 	this->oneArgsMethodMap["delete"] = &DiscManager::Delete;
-	//Заполнение карты методов с 2 аргументами
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ РєР°СЂС‚С‹ РјРµС‚РѕРґРѕРІ СЃ 2 Р°СЂРіСѓРјРµРЅС‚Р°РјРё
 	this->twoArgsMethodMap["copy"] = &DiscManager::Copy;
 }
 
-/*Вспомогательные методы*/
-//Форматирует путь для удобной и однообразной работы с ним
+/*Г‚Г±ГЇГ®Г¬Г®ГЈГ ГІГҐГ«ГјГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г»*/
+//Г”Г®Г°Г¬Г ГІГЁГ°ГіГҐГІ ГЇГіГІГј Г¤Г«Гї ГіГ¤Г®ГЎГ­Г®Г© ГЁ Г®Г¤Г­Г®Г®ГЎГ°Г Г§Г­Г®Г© Г°Г ГЎГ®ГІГ» Г± Г­ГЁГ¬
 std::ostringstream DiscManager::PrepareDir(const string & dir)const throw()
 {
 	std::ostringstream os;
@@ -29,7 +29,7 @@ std::ostringstream DiscManager::PrepareDir(const string & dir)const throw()
 		os << dir;
 	return os;
 }
-//Проверяет существует ли директория по данному пути
+//ГЏГ°Г®ГўГҐГ°ГїГҐГІ Г±ГіГ№ГҐГ±ГІГўГіГҐГІ Г«ГЁ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГї ГЇГ® Г¤Г Г­Г­Г®Г¬Гі ГЇГіГІГЁ
 bool DiscManager::IsDirExist(const string & dir)const throw()
 {
 	std::ostringstream os(this->PrepareDir(dir));
@@ -44,7 +44,7 @@ bool DiscManager::IsDirExist(const string & dir)const throw()
 	_findclose(handle);
 	return true;
 }
-//Проверяет существует ли файл по данному пути
+//ГЏГ°Г®ГўГҐГ°ГїГҐГІ Г±ГіГ№ГҐГ±ГІГўГіГҐГІ Г«ГЁ ГґГ Г©Г« ГЇГ® Г¤Г Г­Г­Г®Г¬Гі ГЇГіГІГЁ
 bool DiscManager::IsFileExist(const string & file)const throw()
 {
 	std::ifstream os(file, std::ios::binary);
@@ -54,15 +54,15 @@ bool DiscManager::IsFileExist(const string & file)const throw()
 	os.close();
 	return ret;
 }
-//Копирует файл
+//ГЉГ®ГЇГЁГ°ГіГҐГІ ГґГ Г©Г«
 void DiscManager::CopyFile(const string & source, const string & dest)const
 {
 	std::ostringstream path;
 	path << dest << "\\" << source.substr(source.rfind("\\") + 1);
-	//При попытке скопировать файл сам в себя
+	//ГЏГ°ГЁ ГЇГ®ГЇГ»ГІГЄГҐ Г±ГЄГ®ГЇГЁГ°Г®ГўГ ГІГј ГґГ Г©Г« Г±Г Г¬ Гў Г±ГҐГЎГї
 	if (source == path.str())
 		return;
-	//Если в папке есть файл с таким названием
+	//Г…Г±Г«ГЁ Гў ГЇГ ГЇГЄГҐ ГҐГ±ГІГј ГґГ Г©Г« Г± ГІГ ГЄГЁГ¬ Г­Г Г§ГўГ Г­ГЁГҐГ¬
 	_finddata_t fd = { 0 };
 	std::unique_ptr<WrapHandle>handle(new WrapHandle());
 	*handle = _findfirst(path.str().c_str(), &fd);
@@ -101,7 +101,7 @@ void DiscManager::CopyFile(const string & source, const string & dest)const
 	inFile.close();
 	outFile.close();
 }
-//Копирует директорию
+//ГЉГ®ГЇГЁГ°ГіГҐГІ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ
 void DiscManager::CopyDir(const string & source, const string & dest)const
 {
 	static std::ostringstream exceptionLog;
@@ -160,7 +160,7 @@ void DiscManager::CopyDir(const string & source, const string & dest)const
 		throw ex;
 	}	
 }
-//Удаляет директорию по заданному пути
+//Г“Г¤Г Г«ГїГҐГІ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ ГЇГ® Г§Г Г¤Г Г­Г­Г®Г¬Гі ГЇГіГІГЁ
 void DiscManager::DeleteDir(const string & dir)const
 {
 	int error = _rmdir(dir.c_str());
@@ -171,7 +171,7 @@ void DiscManager::DeleteDir(const string & dir)const
 		throw MyException(os.str(), "Error deleting dir!");
 	}
 }
-//Удаляет директорию рекурсивно
+//Г“Г¤Г Г«ГїГҐГІ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ Г°ГҐГЄГіГ°Г±ГЁГўГ­Г®
 void DiscManager::DeleteDirRec(const string & dir)const
 {
 	static std::ostringstream exceptionLog;
@@ -226,8 +226,8 @@ void DiscManager::DeleteDirRec(const string & dir)const
 	}
 }
 
-/*Основные методы*/
-//Справка
+/*ГЋГ±Г­Г®ГўГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г»*/
+//Г‘ГЇГ°Г ГўГЄГ 
 void DiscManager::Help()const throw()
 {
 	std::ostringstream os;
@@ -241,7 +241,7 @@ void DiscManager::Help()const throw()
 		<< "copy\t\tCopy directory or file\t\tcopy C:\\MyFile.txt D:\\MyFolder\\MyFile.txt\n\t\t\t\t\t\tcopy C:\\MyDir D:\\MySecondDir - (Warning there must be MySecondDir)";
 	std::cout << os.str() << std::endl;
 }
-//Отображает содерживое текущего каталога
+//ГЋГІГ®ГЎГ°Г Г¦Г ГҐГІ Г±Г®Г¤ГҐГ°Г¦ГЁГўГ®ГҐ ГІГҐГЄГіГ№ГҐГЈГ® ГЄГ ГІГ Г«Г®ГЈГ 
 void DiscManager::ShowDir()const throw()
 {
 	std::ostringstream os;
@@ -262,7 +262,7 @@ void DiscManager::ShowDir()const throw()
 		std::cout << this->currentDirectory << "\\" << fd.name << std::endl;
 	} while (!_findnext(*handle, &fd));
 }
-//Меняет текущее положение в каталоге
+//ГЊГҐГ­ГїГҐГІ ГІГҐГЄГіГ№ГҐГҐ ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ Гў ГЄГ ГІГ Г«Г®ГЈГҐ
 void DiscManager::ChangeDir(const string & dir)const
 {
 	std::ostringstream os(this->PrepareDir(dir).str());
@@ -276,7 +276,7 @@ void DiscManager::ChangeDir(const string & dir)const
 	}
 
 }
-//Чтение файла и вывод на консоль
+//Г—ГІГҐГ­ГЁГҐ ГґГ Г©Г«Г  ГЁ ГўГ»ГўГ®Г¤ Г­Г  ГЄГ®Г­Г±Г®Г«Гј
 void DiscManager::ReadFile(const string & path)const
 {
 	std::ifstream file(path);
@@ -300,10 +300,10 @@ void DiscManager::ReadFile(const string & path)const
 	std::cout << std::endl;
 	file.close();
 }
-//Создает файл
+//Г‘Г®Г§Г¤Г ГҐГІ ГґГ Г©Г«
 void DiscManager::CreateFile(const string & path)const
 {
-	//Если такой файл уже есть то бросает исключение
+	//Г…Г±Г«ГЁ ГІГ ГЄГ®Г© ГґГ Г©Г« ГіГ¦ГҐ ГҐГ±ГІГј ГІГ® ГЎГ°Г®Г±Г ГҐГІ ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГҐ
 	if (this->IsFileExist(path))
 	{
 		std::ostringstream os;
@@ -319,23 +319,23 @@ void DiscManager::CreateFile(const string & path)const
 	}
 	file.close();
 }
-//Копирует файл/директорию
+//ГЉГ®ГЇГЁГ°ГіГҐГІ ГґГ Г©Г«/Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ
 void DiscManager::Copy(const string & pathSource, const string & pathDest)const
 {
-	//Форматирует путь назначения
+	//Г”Г®Г°Г¬Г ГІГЁГ°ГіГҐГІ ГЇГіГІГј Г­Г Г§Г­Г Г·ГҐГ­ГЁГї
 	std::ostringstream osDest(this->PrepareDir(pathDest));
-	//Если слева и справа существующие директории
+	//Г…Г±Г«ГЁ Г±Г«ГҐГўГ  ГЁ Г±ГЇГ°Г ГўГ  Г±ГіГ№ГҐГ±ГІГўГіГѕГ№ГЁГҐ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГЁ
 	if (this->IsDirExist(pathSource) && this->IsDirExist(pathDest))
 	{
-		//Форматирует путь источника
+		//Г”Г®Г°Г¬Г ГІГЁГ°ГіГҐГІ ГЇГіГІГј ГЁГ±ГІГ®Г·Г­ГЁГЄГ 
 		std::ostringstream osSource(this->PrepareDir(pathSource));
-		//Копирует содержимое директории слева в директорию справа
+		//ГЉГ®ГЇГЁГ°ГіГҐГІ Г±Г®Г¤ГҐГ°Г¦ГЁГ¬Г®ГҐ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГЁ Г±Г«ГҐГўГ  Гў Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ Г±ГЇГ°Г ГўГ 
 		this->CopyDir(osSource.str(), osDest.str());
 	}
-	//Если слева файл, а справа директория то копирует файл слева в директорию срава
+	//Г…Г±Г«ГЁ Г±Г«ГҐГўГ  ГґГ Г©Г«, Г  Г±ГЇГ°Г ГўГ  Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГї ГІГ® ГЄГ®ГЇГЁГ°ГіГҐГІ ГґГ Г©Г« Г±Г«ГҐГўГ  Гў Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ Г±Г°Г ГўГ 
 	else if (this->IsFileExist(pathSource) && this->IsDirExist(pathDest))
 		this->CopyFile(pathSource, osDest.str());
-	//Иначе некорректные пути
+	//Г€Г­Г Г·ГҐ Г­ГҐГЄГ®Г°Г°ГҐГЄГІГ­Г»ГҐ ГЇГіГІГЁ
 	else
 	{
 		std::ostringstream os;
@@ -343,7 +343,7 @@ void DiscManager::Copy(const string & pathSource, const string & pathDest)const
 		throw MyException(os.str(), "Copy error: incorrect copy context");
 	}
 }
-//Удаляет файл/директорию
+//Г“Г¤Г Г«ГїГҐГІ ГґГ Г©Г«/Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ
 void DiscManager::Delete(const string & path)const
 {
 	if (this->IsDirExist(path))
@@ -358,11 +358,11 @@ void DiscManager::Delete(const string & path)const
 	}
 }
 
-//Метод выполнения команды
+//ГЊГҐГІГ®Г¤ ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї ГЄГ®Г¬Г Г­Г¤Г»
 void DiscManager::Execute(const vector<string> & args)
 {
-	/*Определяет количество аргументов, сверяется с картой,
-	и если есть такой метод - выполняет его, если нету выбрасывает исключение*/
+	/*ГЋГЇГ°ГҐГ¤ГҐГ«ГїГҐГІ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г Г°ГЈГіГ¬ГҐГ­ГІГ®Гў, Г±ГўГҐГ°ГїГҐГІГ±Гї Г± ГЄГ Г°ГІГ®Г©,
+	ГЁ ГҐГ±Г«ГЁ ГҐГ±ГІГј ГІГ ГЄГ®Г© Г¬ГҐГІГ®Г¤ - ГўГ»ГЇГ®Г«Г­ГїГҐГІ ГҐГЈГ®, ГҐГ±Г«ГЁ Г­ГҐГІГі ГўГ»ГЎГ°Г Г±Г»ГўГ ГҐГІ ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГҐ*/
 	switch (args.size())
 	{
 	case NoArguments:
