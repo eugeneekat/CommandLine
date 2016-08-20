@@ -11,31 +11,37 @@
 class DiscManager : public IExecutable
 {
 private:
-	//Текущее положение в каталоге
+	//РўРµРєСѓС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ РІ РєР°С‚Р°Р»РѕРіРµ
 	mutable string currentDirectory;
 protected:
 	enum MethodArgumentsCount {NoArguments = 1, OneArgument = 2, TwoArgunemts = 3};
 
-	/*Карты методов (без аргументов, с 1 аргументом и с 2 аргументами)*/
+	/*РљР°СЂС‚С‹ РјРµС‚РѕРґРѕРІ (Р±РµР· Р°СЂРіСѓРјРµРЅС‚РѕРІ, СЃ 1 Р°СЂРіСѓРјРµРЅС‚РѕРј Рё СЃ 2 Р°СЂРіСѓРјРµРЅС‚Р°РјРё)*/
 	std::map<string, void(DiscManager::*)()const> voidMethodMap;
 	std::map<string, void(DiscManager::*)(const string & arg)const> oneArgsMethodMap;
 	std::map<string, void(DiscManager::*)(const string & arg1, const string & arg2)const> twoArgsMethodMap;
 	
-	//Заполнение карт методов
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ РєР°СЂС‚ РјРµС‚РѕРґРѕРІ
 	virtual void FillMethodMap()throw();
 
-	/*Вспомогательные методы*/
-	//Форматирует путь для работы с ним
+	/*Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹*/
+	
+	//Р¤РѕСЂРјР°С‚РёСЂСѓРµС‚ РїСѓС‚СЊ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЅРёРј
 	std::ostringstream PrepareDir(const string & dir)const throw();
-	//Проверяет существует ли директория по данному пути
+	
+	//РџСЂРѕРІРµСЂСЏРµС‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РґРёСЂРµРєС‚РѕСЂРёСЏ РїРѕ РґР°РЅРЅРѕРјСѓ РїСѓС‚Рё
 	bool IsDirExist(const string & dir)const throw();
-	//Проверяет существует ли файл по данному пути
+	
+	//РџСЂРѕРІРµСЂСЏРµС‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё С„Р°Р№Р» РїРѕ РґР°РЅРЅРѕРјСѓ РїСѓС‚Рё
 	bool IsFileExist(const string & file)const throw();
-	//Копирует файл
+	
+	//РљРѕРїРёСЂСѓРµС‚ С„Р°Р№Р»
 	void CopyFile(const string & source, const string & dest)const;
-	//Копирует директорию
+	
+	//РљРѕРїРёСЂСѓРµС‚ РґРёСЂРµРєС‚РѕСЂРёСЋ
 	void CopyDir(const string & source, const string & dest)const;
-	//Удаляет файл
+
+	//РЈРґР°Р»СЏРµС‚ С„Р°Р№Р»
 	void DeleteFile(const string & file)const
 	{
 		int error = remove(file.c_str());
@@ -46,26 +52,34 @@ protected:
 			throw MyException(os.str(), "Error deleting file");
 		}
 	}
-	//Удаляет директорию по заданному пути
+
+	//РЈРґР°Р»СЏРµС‚ РґРёСЂРµРєС‚РѕСЂРёСЋ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РїСѓС‚Рё
 	void DeleteDir(const string & dir)const;
-	//Удаляет директорию рекурсивно
+
+	//РЈРґР°Р»СЏРµС‚ РґРёСЂРµРєС‚РѕСЂРёСЋ СЂРµРєСѓСЂСЃРёРІРЅРѕ
 	void DeleteDirRec(const string & dir)const;
 
-	/*Основные методы*/
-	//Справка
+	/*РћСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹*/
+	
+	//РЎРїСЂР°РІРєР°
 	void Help()const throw();
-	//Отображает текущее положение в каталоге
+	
+	//РћС‚РѕР±СЂР°Р¶Р°РµС‚ С‚РµРєСѓС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ РІ РєР°С‚Р°Р»РѕРіРµ
 	void ShowCurrentDir()const throw()
 	{
 		std::cout << this->currentDirectory << "\\ >";
 	}
-	//Отображает содерживое текущего каталога
+	
+	//РћС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРѕРґРµСЂР¶РёРІРѕРµ С‚РµРєСѓС‰РµРіРѕ РєР°С‚Р°Р»РѕРіР°
 	void ShowDir()const throw();
-	//Меняет текущее положение в каталоге
+	
+	//РњРµРЅСЏРµС‚ С‚РµРєСѓС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ РІ РєР°С‚Р°Р»РѕРіРµ
 	void ChangeDir(const string & dir)const;
-	//Чтение файла и вывод на консоль
+	
+	//Р§С‚РµРЅРёРµ С„Р°Р№Р»Р° Рё РІС‹РІРѕРґ РЅР° РєРѕРЅСЃРѕР»СЊ
 	void ReadFile(const string & path)const;
-	//Создает директорию
+	
+	//РЎРѕР·РґР°РµС‚ РґРёСЂРµРєС‚РѕСЂРёСЋ
 	void CreateDir(const string & path)const
 	{
 		int err = _mkdir(path.c_str());
@@ -76,11 +90,14 @@ protected:
 			throw MyException(os.str(), "Error create dir");
 		}
 	}
-	//Создает файл
+	
+	//РЎРѕР·РґР°РµС‚ С„Р°Р№Р»
 	void CreateFile(const string & path)const;
-	//Копирует файл/директорию
+	
+	//РљРѕРїРёСЂСѓРµС‚ С„Р°Р№Р»/РґРёСЂРµРєС‚РѕСЂРёСЋ
 	void Copy(const string & pathSource, const string & pathDest)const;
-	//Удаляет файл/директорию
+	
+	//РЈРґР°Р»СЏРµС‚ С„Р°Р№Р»/РґРёСЂРµРєС‚РѕСЂРёСЋ
 	void Delete(const string & path)const;
 
 public:
@@ -90,6 +107,6 @@ public:
 		this->FillMethodMap();
 	}
 	virtual ~DiscManager()throw() {};
-	//Метод исполняющий команду
+	//РњРµС‚РѕРґ РёСЃРїРѕР»РЅСЏСЋС‰РёР№ РєРѕРјР°РЅРґСѓ
 	virtual void Execute(const vector<string> & args);
 };
