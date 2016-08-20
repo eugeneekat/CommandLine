@@ -242,7 +242,7 @@ void DiscManager::Help()const throw()
 	std::cout << os.str() << std::endl;
 }
 //Отображает содерживое текущего каталога
-void DiscManager::ShowDir()const throw()
+void DiscManager::ShowDir()const
 {
 	std::ostringstream os;
 	os << this->currentDirectory << "\\*.*";
