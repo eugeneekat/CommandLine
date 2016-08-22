@@ -366,17 +366,17 @@ void DiscManager::Execute(const vector<string> & args)
 	и если есть такой метод - выполняет его, если нету выбрасывает исключение*/
 	switch (args.size())
 	{
-	case NoArguments:
+	case MethodArgumentsCount::NoArguments:
 		if (this->voidMethodMap.find(args[0]) == this->voidMethodMap.cend())
 			goto exceptionLabel;
 		(this->*voidMethodMap[args[0]])();
 		break;
-	case OneArgument:
+	case MethodArgumentsCount::OneArgument:
 		if (this->oneArgsMethodMap.find(args[0]) == this->oneArgsMethodMap.cend())
 			goto exceptionLabel;
 		(this->*oneArgsMethodMap[args[0]])(args[1]);
 		break;
-	case TwoArgunemts:
+	case MethodArgumentsCount::TwoArgunemts:
 		if (this->twoArgsMethodMap.find(args[0]) == this->twoArgsMethodMap.cend())
 			goto exceptionLabel;
 		(this->*twoArgsMethodMap[args[0]])(args[1], args[2]);
