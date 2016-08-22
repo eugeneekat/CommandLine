@@ -11,12 +11,12 @@ int main()
 	{
 		Interpritator & interpritator = Interpritator::GetInstance();
 		string command;
-		interpritator.Execute("scd");
+		interpritator.GetCommand("scd");
 		//Выполнение комманд
 		while (std::getline(std::cin, command) && command != "exit")
 		{
-			interpritator.Execute(command);
-			interpritator.Execute("scd");
+			interpritator.GetCommand(command);
+			interpritator.GetCommand("scd");
 		}
 	}
 	//Эти исключения ловят ошибки при инициализации интерпритатора(ошибки выполнения ловятся в самом интерпритаторе)
