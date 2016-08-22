@@ -34,7 +34,7 @@ public:
 	}
 	/*Метод выполнения команды в соответствии с выбранной
 	стратегией парсинга и класса исполнителя*/
-	void Execute(const string & strCmd)
+	void GetCommand(const string & strCmd)
 	{
 		try
 		{
