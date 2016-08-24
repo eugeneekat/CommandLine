@@ -7,7 +7,7 @@
 class Interpritator
 {
 private:
-	Singleton
+	//Singleton
 	Interpritator()
 	{
 		//Инициализация парсера
