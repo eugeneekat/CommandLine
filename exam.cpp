@@ -20,7 +20,7 @@ int main()
 		}
 	}
 	//Эти исключения ловят ошибки при инициализации интерпритатора(ошибки выполнения ловятся в самом интерпритаторе)
-	catch (std::exception ex)
+	catch (const std::exception & ex)
 	{
 		std::cout << ex.what() << std::endl;
 	}
